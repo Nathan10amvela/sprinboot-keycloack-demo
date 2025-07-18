@@ -1,0 +1,311 @@
+Project Context From: /home/nathan/Documents/sprinboot-keycloack-demo
+Generated On: ven. 18 juil. 2025 14:49:27 WAT
+===============================================
+Ignored Directory Patterns: .* node_modules vendor build dist target __pycache__ .next cache target venv storage
+Ignored File Patterns: *.log *.jar *.pdf *.png *.jpg *.class *.sqlite *.csv project_context.txt package-lock.json yarn.lock composer.lock *.ico pnpm-lock.yaml
+===============================================
+
+//---> PATH: /home/nathan/Documents/sprinboot-keycloack-demo/.gitignore
+
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+// END OF FILE: .gitignore
+
+//---> PATH: /home/nathan/Documents/sprinboot-keycloack-demo/pom.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.2</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+  <groupId>com.smhplus</groupId>
+  <artifactId>springboot-keycloack-demo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>user-service</name>
+  <description>Demo project for Spring Boot</description>
+  <url/>
+  <licenses>
+    <license/>
+  </licenses>
+  <developers>
+    <developer/>
+  </developers>
+  <scm>
+    <connection/>
+    <developerConnection/>
+    <tag/>
+    <url/>
+  </scm>
+  <properties>
+    <java.version>21</java.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <sonar.projectKey>user</sonar.projectKey>
+    <sonar.projectName>user</sonar.projectName>
+    <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-oauth2-client</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+  <plugins>
+    <plugin>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-maven-plugin</artifactId>
+    </plugin>
+
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.11.0</version> <!-- ou plus récent -->
+      <configuration>
+        <release>21</release>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+
+</project>
+// END OF FILE: pom.xml
+
+//---> PATH: /home/nathan/Documents/sprinboot-keycloack-demo/src/main/java/com/example/demo/config/SecurityConfig.java
+
+package com.example.demo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+/**
+ * SecurityConfig class configures security settings for the application,
+ * enabling security filters and setting up OAuth2 login and logout behavior.
+ */
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    /**
+     * Configures the security filter chain for handling HTTP requests, OAuth2 login, and logout.
+     *
+     * @param http HttpSecurity object to define web-based security at the HTTP level
+     * @return SecurityFilterChain for filtering and securing HTTP requests
+     * @throws Exception in case of an error during configuration
+     */
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                // Configures authorization rules for different endpoints
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/").permitAll() // Allows public access to the root URL
+                        .requestMatchers("/menu").authenticated() // Requires authentication to access "/menu"
+                        .anyRequest().authenticated() // Requires authentication for any other request
+                )
+                // Configures OAuth2 login settings
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/oauth2/authorization/keycloak") // Sets custom login page for OAuth2 with Keycloak
+                        .defaultSuccessUrl("/menu", true) // Redirects to "/menu" after successful login
+                )
+                // Configures logout settings
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/") // Redirects to the root URL on successful logout
+                        .invalidateHttpSession(true) // Invalidates session to clear session data
+                        .clearAuthentication(true) // Clears authentication details
+                        .deleteCookies("JSESSIONID") // Deletes the session cookie
+                );
+
+        return http.build();
+    }
+}
+
+
+// END OF FILE: src/main/java/com/example/demo/config/SecurityConfig.java
+
+//---> PATH: /home/nathan/Documents/sprinboot-keycloack-demo/src/main/java/com/example/demo/controller/FoodOrderingController.java
+
+package com.example.demo.controller;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+/**
+ * FoodOrderingController handles web requests related to the home and menu pages of the food ordering application.
+ */
+@Controller
+public class FoodOrderingController {
+
+  /**
+   * Maps the root URL ("/") to the home page.
+   *
+   * @return the name of the view to render for the home page
+   */
+  @GetMapping("/")
+  public String home() {
+    return "home";
+  }
+
+  /**
+   * Maps the "/menu" URL to the menu page and sets the authenticated user's username in the model.
+   *
+   * @param user  the authenticated OIDC (OpenID Connect) user
+   * @param model Model object for passing data to the view
+   * @return the name of the view to render for the menu page, or redirects to home if user is not authenticated
+   */
+  @GetMapping("/menu")
+  public String menu(@AuthenticationPrincipal OidcUser user, Model model) {
+    if (user != null) {
+      model.addAttribute("username", user.getPreferredUsername());
+    } else {
+      return "redirect:/";  // Redirect to home if not authenticated
+    }
+    return "menu";
+  }
+}
+
+// END OF FILE: src/main/java/com/example/demo/controller/FoodOrderingController.java
+
+//---> PATH: /home/nathan/Documents/sprinboot-keycloack-demo/src/main/java/com/example/demo/DemoApplication.java
+
+package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication {
+  public static void main(String[] args) {
+    SpringApplication.run(DemoApplication.class, args);
+  }
+}// END OF FILE: src/main/java/com/example/demo/DemoApplication.java
+
+//---> PATH: /home/nathan/Documents/sprinboot-keycloack-demo/src/main/resources/application.yml
+
+server:
+  port: 8081
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://135.181.255.229:8080/realms/demo-realm
+          jwk-set-uri: http://135.181.255.229:8080/realms/demo-realm/protocol/openid-connect/certs
+
+      client:
+        registration:
+          keycloak:
+            client-id: demo-client
+            client-secret: MhiXS7ojHJGr35h14JyVvmjx2mtUx8eC
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+        provider:
+          keycloak:
+            issuer-uri: http://135.181.255.229:8080/realms/demo-realm
+
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+// END OF FILE: src/main/resources/application.yml
+
+//---> PATH: /home/nathan/Documents/sprinboot-keycloack-demo/src/main/resources/templates/home.html
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Welcome to Food Ordering</title>
+</head>
+<body>
+<h1>Welcome to Food Ordering</h1>
+<p>Click <a th:href="@{/menu}">here</a> to view the menu (requires login).</p>
+</body>
+</html>
+// END OF FILE: src/main/resources/templates/home.html
+
+//---> PATH: /home/nathan/Documents/sprinboot-keycloack-demo/src/main/resources/templates/menu.html
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Food Ordering Menu</title>
+</head>
+<body>
+<h1>Welcome to the Menu, <span th:text="${username}"></span>!</h1>
+<p>Here's our menu (placeholder):</p>
+<ul>
+    <li>Pizza - $10</li>
+    <li>Burger - $8</li>
+    <li>Salad - $6</li>
+</ul>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout"/>
+</form>
+</body>
+</html>
+// END OF FILE: src/main/resources/templates/menu.html
+

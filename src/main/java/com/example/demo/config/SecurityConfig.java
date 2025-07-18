@@ -26,14 +26,13 @@ public class SecurityConfig {
         http
                 // Configures authorization rules for different endpoints
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/").permitAll() // Allows public access to the root URL
-                        .requestMatchers("/menu").authenticated() // Requires authentication to access "/menu"
+                        .requestMatchers("/", "/login", "/error").permitAll() // Allows public access
                         .anyRequest().authenticated() // Requires authentication for any other request
                 )
                 // Configures OAuth2 login settings
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/oauth2/authorization/keycloak") // Sets custom login page for OAuth2 with Keycloak
                         .defaultSuccessUrl("/menu", true) // Redirects to "/menu" after successful login
+                        .failureUrl("/login?error=true") // Redirects to login with error on failure
                 )
                 // Configures logout settings
                 .logout(logout -> logout
@@ -46,5 +45,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-
-

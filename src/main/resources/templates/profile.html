@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Profile</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .claims { background-color: #f5f5f5; padding: 10px; margin: 10px 0; }
+        .navigation { margin: 20px 0; }
+        .navigation a { margin-right: 10px; color: #007bff; text-decoration: none; }
+        .navigation a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<h1>User Profile</h1>
+
+<div class="navigation">
+    <a th:href="@{/}">Home</a>
+    <a th:href="@{/menu}">Menu</a>
+    <a th:href="@{/profile}">Profile</a>
+</div>
+
+<div th:if="${user}">
+    <h2>Welcome, <span th:text="${user.preferredUsername}"></span>!</h2>
+
+    <h3>User Information:</h3>
+    <p><strong>Name:</strong> <span th:text="${user.fullName}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+    <p><strong>Username:</strong> <span th:text="${user.preferredUsername}"></span></p>
+
+    <h3>Claims:</h3>
+    <div class="claims">
+        <pre th:text="${claims}"></pre>
+    </div>
+</div>
+
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout"/>
+</form>
+</body>
+</html>

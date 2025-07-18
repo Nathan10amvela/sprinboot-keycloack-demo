@@ -4,11 +4,6 @@ server:
 spring:
   security:
     oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://135.181.255.229:8080/realms/demo-realm
-          jwk-set-uri: http://135.181.255.229:8080/realms/demo-realm/protocol/openid-connect/certs
-
       client:
         registration:
           keycloak:
@@ -16,10 +11,15 @@ spring:
             client-secret: MhiXS7ojHJGr35h14JyVvmjx2mtUx8eC
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
+            scope: openid,profile,email
         provider:
           keycloak:
             issuer-uri: http://135.181.255.229:8080/realms/demo-realm
-
+            authorization-uri: http://135.181.255.229:8080/realms/demo-realm/protocol/openid-connect/auth
+            token-uri: http://135.181.255.229:8080/realms/demo-realm/protocol/openid-connect/token
+            user-info-uri: http://135.181.255.229:8080/realms/demo-realm/protocol/openid-connect/userinfo
+            jwk-set-uri: http://135.181.255.229:8080/realms/demo-realm/protocol/openid-connect/certs
+            user-name-attribute: preferred_username
 
 logging:
   level:
