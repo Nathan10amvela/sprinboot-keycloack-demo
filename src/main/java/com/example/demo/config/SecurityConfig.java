@@ -1,36 +1,50 @@
 package com.example.demo.config;
 
-import com.example.demo.config.JwtConverter; // remplace avec ton vrai package
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 
+/**
+ * SecurityConfig class configures security settings for the application,
+ * enabling security filters and setting up OAuth2 login and logout behavior.
+ */
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
-  private final JwtConverter jwtConverter;
+    /**
+     * Configures the security filter chain for handling HTTP requests, OAuth2 login, and logout.
+     *
+     * @param http HttpSecurity object to define web-based security at the HTTP level
+     * @return SecurityFilterChain for filtering and securing HTTP requests
+     * @throws Exception in case of an error during configuration
+     */
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                // Configures authorization rules for different endpoints
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/").permitAll() // Allows public access to the root URL
+                        .requestMatchers("/menu").authenticated() // Requires authentication to access "/menu"
+                        .anyRequest().authenticated() // Requires authentication for any other request
+                )
+                // Configures OAuth2 login settings
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/oauth2/authorization/keycloak") // Sets custom login page for OAuth2 with Keycloak
+                        .defaultSuccessUrl("/menu", true) // Redirects to "/menu" after successful login
+                )
+                // Configures logout settings
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/") // Redirects to the root URL on successful logout
+                        .invalidateHttpSession(true) // Invalidates session to clear session data
+                        .clearAuthentication(true) // Clears authentication details
+                        .deleteCookies("JSESSIONID") // Deletes the session cookie
+                );
 
-  public SecurityConfig(JwtConverter jwtConverter) {
-    this.jwtConverter = jwtConverter;
-  }
-
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-            .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/public").permitAll()
-                    .anyRequest().authenticated()
-            )
-            .oauth2Login(Customizer.withDefaults()) // nouvelle façon recommandée
-            .oauth2ResourceServer(resource -> resource
-                    .jwt(jwt -> jwt
-                            .jwtAuthenticationConverter(jwtConverter)
-                    )
-            );
-
-    return http.build();
-  }
+        return http.build();
+    }
 }
+
+

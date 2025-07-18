@@ -13,15 +13,18 @@ spring:
         registration:
           keycloak:
             client-id: demo-client
-            authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-secret: MhiXS7ojHJGr35h14JyVvmjx2mtUx8eC
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: "http://135.181.255.229:8081/login/oauth2/code/keycloack"
         provider:
           keycloak:
             issuer-uri: http://135.181.255.229:8080/realms/demo-realm
-            user-name-attribute: preferred_username
 
-jwt:
-  auth:
-    converter:
-      resource-id: demo
-      principle-attribute: preferred_username
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
