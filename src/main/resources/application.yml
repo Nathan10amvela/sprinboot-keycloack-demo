@@ -15,6 +15,7 @@ spring:
             client-id: demo-client
             client-secret: MhiXS7ojHJGr35h14JyVvmjx2mtUx8eC
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
         provider:
           keycloak:
             issuer-uri: http://135.181.255.229:8080/realms/demo-realm
