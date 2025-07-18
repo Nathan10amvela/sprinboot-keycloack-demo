@@ -7,6 +7,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://135.181.255.229:8080/realms/demo-realm
+          jwk-set-uri: http://135.181.255.229:8080/realms/demo-realm/protocol/openid-connect/certs
 
       client:
         registration:
@@ -18,3 +19,9 @@ spring:
           keycloak:
             issuer-uri: http://135.181.255.229:8080/realms/demo-realm
             user-name-attribute: preferred_username
+
+jwt:
+  auth:
+    converter:
+      resource-id: demo
+      principle-attribute: preferred_username
