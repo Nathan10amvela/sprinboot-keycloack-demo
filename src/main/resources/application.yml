@@ -14,10 +14,6 @@ spring:
           keycloak:
             client-id: demo-client
             client-secret: MhiXS7ojHJGr35h14JyVvmjx2mtUx8eC
-            scope:
-              - openid
-              - profile
-              - email
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
         provider:
           keycloak:
