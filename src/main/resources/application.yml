@@ -18,7 +18,7 @@ spring:
               - openid
               - profile
               - email
-            redirect-uri: "http://135.181.255.229:8081/login/oauth2/code/keycloack"
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
         provider:
           keycloak:
             issuer-uri: http://135.181.255.229:8080/realms/demo-realm
